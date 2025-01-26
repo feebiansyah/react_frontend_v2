@@ -1,8 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import ModalFolmulir from "../../components/layout/ModalFormulir";
 import { useState } from "react";
+import api from "../../api/api";
 const FolmulirPage = () => {
+  const [folmulirData, setFolmulirData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  console.log(folmulirData);
+  useEffect(() => {
+    const fecthData = async () => {
+      try {
+        const response = await api.get("/forms");
+        setFolmulirData(response.data.forms);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fecthData();
+  }, []);
+
   return (
     <>
       <h2>Daftar Folmulir</h2>
@@ -30,37 +49,27 @@ const FolmulirPage = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>Judul Pertama</td>
-              <td>judul-pertama</td>
-              <td>Deskripsi judul pertama</td>
-              <td>Ya</td>
-              <td>
-                <Link to={"/form/slug"} className="btn btn-sm btn-info text-light">
-                  Detail
-                </Link>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Judul kedua</td>
-              <td>judul-kedua</td>
-              <td>Deskripsi judul kedua</td>
-              <td>tidak</td>
-              <td>
-                <Link to="/" className="btn btn-sm btn-info text-light">
-                  Detail
-                </Link>
-              </td>
-            </tr>
+            {folmulirData.map((item, index) => (
+              <tr key={item.id}>
+                <td>{index + 1}</td>
+                <td>{item.name}</td>
+                <td>{item.slug}</td>
+                <td>{item.description}</td>
+                <td>{item.limit_one_response == 1 ? "Ya" : "Tidak"}</td>
+                <td>
+                  <Link
+                    to={"/form/slug"}
+                    className="btn btn-sm btn-info text-light"
+                  >
+                    Detail
+                  </Link>
+                </td>
+              </tr>
+            ))}
+            
           </tbody>
         </table>
       </div>
-
-
-
-      
 
       {/*Modal formulir  */}
       <ModalFolmulir></ModalFolmulir>
