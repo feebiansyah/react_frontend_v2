@@ -10,7 +10,7 @@ const FolmulirPage = () => {
         <div className="d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary w-25 mb-4"
+            className="btn btn-sm btn-primary w-25 mb-4"
             data-bs-toggle="modal"
             data-bs-target="#modalFolmulir"
           >
@@ -37,9 +37,9 @@ const FolmulirPage = () => {
               <td>Deskripsi judul pertama</td>
               <td>Ya</td>
               <td>
-                <a href="" className="btn btn-sm btn-info text-light">
+                <Link to={"/form/slug"} className="btn btn-sm btn-info text-light">
                   Detail
-                </a>
+                </Link>
               </td>
             </tr>
             <tr>
@@ -57,6 +57,10 @@ const FolmulirPage = () => {
           </tbody>
         </table>
       </div>
+
+
+
+      
 
       {/*Modal formulir  */}
       <ModalFolmulir></ModalFolmulir>

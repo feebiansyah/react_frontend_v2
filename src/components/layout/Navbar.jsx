@@ -22,14 +22,19 @@ const Navbar = () => {
         <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
           <ul className="navbar-nav">
             <li className="nav-item">
-              <a className="nav-link active" aria-current="page" href="/" >
+              <Link to={'/'} className="nav-link active" aria-current="page"  >
                 Home
-              </a>  
+              </Link>  
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/form">
+              <Link to={"/form"} className="nav-link" >
                 Folmulir
-              </a>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to={"/logout"} className="nav-link" >
+                Logout
+              </Link>
             </li>
            
           </ul>

@@ -27,7 +27,7 @@ const ModalFolmulir = () => {
         <div className="modal-content">
           <div className="modal-header">
             <h1 className="modal-title fs-5" id="exampleModalLabel">
-              Modal title
+              Buat Folmulir
             </h1>
             <button
               type="button"
@@ -40,7 +40,7 @@ const ModalFolmulir = () => {
             <div className="modal-body">
               <div className="form-group mb-2">
                 <label htmlFor="name" className="form-label">
-                  Judul Folmulir:
+                  Judul Pertanyaan :
                 </label>
                 <input
                   type="text"
@@ -131,10 +131,10 @@ const ModalFolmulir = () => {
                 className="btn btn-secondary"
                 data-bs-dismiss="modal"
               >
-                Close
+                Tutup
               </button>
-              <button type="submit" className="btn btn-primary">
-                Save changes
+              <button type="submit" className="btn btn-success">
+                Submit
               </button>
             </div>
           </form>
