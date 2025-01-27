@@ -1,8 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ModalPertanyaan from "../../components/layout/ModalPertanyaan";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import api from "../../api/api";
+import FolmulirPage from ".";
 
 const DetailFolmulir = () => {
+  const {slug} = useParams();
+  const [formulirData, setFormulirData] = useState([]);
+
+
+  useEffect(() => {
+    const fecthData = async () => {
+      try{
+          const response = await api.get(`/forms/${slug}`);
+         
+          setFormulirData(response.data.form);
+      }catch(err) {
+        console.log(err);
+      }finally{
+
+      }
+    }
+    fecthData();
+    
+  }, [slug]);
+  console.log(formulirData);
   return (
     <>
       <div className="card my-3">
@@ -12,20 +34,22 @@ const DetailFolmulir = () => {
         <div className="card-body">
           <div className="mb-3">
             <h4 className="card-title mb-2">
-              Judul Folmulir : Biodata - Web tech members
+              Judul Folmulir : {formulirData.name}
             </h4>
             <p className="card-text">
-              <strong>Deskripsi :</strong> to save tech web member
+              <strong>Deskripsi :</strong> {formulirData.description}
             </p>
             <p className="card-text">
-              <strong>Slug :</strong> bodata
+              <strong>Slug :</strong> {formulirData.slug}
             </p>
             <p className="card-text">
-              <strong>Limit Satu Response :</strong> Ya
+              <strong>Limit Satu Response :</strong> {formulirData === 1 ? "Ya" : "tidak"}
             </p>
             <div className="d-flex justify-content-between">
               <p className="card-text mb-2  ">
-                <strong>Domain Yang Diijinkan :</strong> webtech.id
+                {/* <strong>Domain Yang Diijinkan :</strong> {formulirData.allowed_domains.map((element, index) => (
+                  <p className="d-inline gap-1" key={index}>{element + ", "}</p>   
+                ))} */}
               </p>
               <div className=" d-flex gap-2">
                 <Link to={"/form"} className="btn mb-2 btn-sm btn-warning">&laquo;Kembali</Link>
@@ -53,6 +77,9 @@ const DetailFolmulir = () => {
               </tr>
             </thead>
             <tbody>
+              
+
+              
               <tr>
                 <td>1</td>
                 <td>Nama</td>
@@ -60,13 +87,8 @@ const DetailFolmulir = () => {
                 <td>-</td>
                 <td>Ya</td>
               </tr>
-              <tr>
-                <td>2</td>
-                <td>Alamat</td>
-                <td>Paragrapah</td>
-                <td>-</td>
-                <td>Tidak</td>
-              </tr>
+              
+             
             </tbody>
           </table>
         </div>

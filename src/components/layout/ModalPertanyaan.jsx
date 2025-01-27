@@ -9,7 +9,7 @@ const ModalPertanyaan = () => {
   const [isRequired, setIsRequired] = useState(false);
 
   
-  console.log(choice);
+
 
   const handleAddChoice = () => {
     if (newChoice.trim() !== "") {
@@ -117,7 +117,7 @@ const ModalPertanyaan = () => {
                 <input
                   type="checkbox"
                   id="isRequired"
-                  className="formm-check-input ml-3"
+                  className="form-check-input ml-3"
                   checked={isRequired}
                   onChange={(e) => setIsRequired(e.target.checked)}
                 />

@@ -19,6 +19,8 @@ const Login = () => {
 
   const handlerSubmit = async (e) => {
     e.preventDefault();
+    setInvalidEmail("");
+    setInvalidPassword("");
     setIsSubmit(true);
     setError("");
     const formData = {
