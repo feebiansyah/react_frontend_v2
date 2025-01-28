@@ -5,26 +5,36 @@ import api from "../../api/api";
 import FolmulirPage from ".";
 
 const DetailFolmulir = () => {
-  const {slug} = useParams();
+  const { slug } = useParams();
   const [formulirData, setFormulirData] = useState([]);
 
+  const fecthData = async () => {
+    try {
+      const response = await api.get(`/forms/${slug}`);
 
-  useEffect(() => {
-    const fecthData = async () => {
-      try{
-          const response = await api.get(`/forms/${slug}`);
-         
-          setFormulirData(response.data.form);
-      }catch(err) {
-        console.log(err);
-      }finally{
-
-      }
+      setFormulirData(response.data.form);
+    } catch (err) {
+      console.log(err);
+    } finally {
     }
+  };
+  useEffect(() => {
     fecthData();
-    
+    console.log(formulirData);
   }, [slug]);
-  console.log(formulirData);
+
+  const handlerCreateQuestion = async (questionData) => {
+    console.log(questionData);
+    try {
+      const response = await api.post(`/forms/${slug}/questions`, questionData);
+      console.log(response);
+      fecthData();
+    } catch (err) {
+      console.log(err);
+    } finally {
+    }
+  };
+
   return (
     <>
       <div className="card my-3">
@@ -43,16 +53,27 @@ const DetailFolmulir = () => {
               <strong>Slug :</strong> {formulirData.slug}
             </p>
             <p className="card-text">
-              <strong>Limit Satu Response :</strong> {formulirData === 1 ? "Ya" : "tidak"}
+              <strong>Limit Satu Response :</strong>{" "}
+              {formulirData === 1 ? "Ya" : "tidak"}
             </p>
             <div className="d-flex justify-content-between">
               <p className="card-text mb-2  ">
-                {/* <strong>Domain Yang Diijinkan :</strong> {formulirData.allowed_domains.map((element, index) => (
-                  <p className="d-inline gap-1" key={index}>{element + ", "}</p>   
-                ))} */}
+                <strong>Domain Yang Diijinkan :</strong>
+                {formulirData?.allowed_domains?.length > 0 ? (
+                  formulirData.allowed_domains.map((element, index) => (
+                    <span className="d-inline gap-1" key={index}>
+                      {element}
+                      {index < formulirData.allowed_domains.length - 1 && ", "}
+                    </span>
+                  ))
+                ) : (
+                  <span>Tidak ada domain yang diizinkan</span>
+                )}
               </p>
               <div className=" d-flex gap-2">
-                <Link to={"/form"} className="btn mb-2 btn-sm btn-warning">&laquo;Kembali</Link>
+                <Link to={"/form"} className="btn mb-2 btn-sm btn-warning">
+                  &laquo;Kembali
+                </Link>
                 <button
                   type="button"
                   data-bs-toggle="modal"
@@ -77,24 +98,35 @@ const DetailFolmulir = () => {
               </tr>
             </thead>
             <tbody>
-              
+              {formulirData?.questions?.length > 0 &&
+                formulirData.questions.flat().map((item, index) => {
+                  return (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{item.name}</td>
+                      <td>{item.choice_type}</td>
+                      {/* <td>{item.choices !== null ? item.choices : "-"}</td> */}
+                      <td>
+                        {item.choices?.length > 0
+                          ? item.choices.map((choice, index) => (
+                              <span key={index}>
+                                {choice}
+                                {index < item.choices.length - 1 && ", "}
+                              </span>
+                            ))
+                          : "-"}
+                      </td>
 
-              
-              <tr>
-                <td>1</td>
-                <td>Nama</td>
-                <td>Short Answer</td>
-                <td>-</td>
-                <td>Ya</td>
-              </tr>
-              
-             
+                      <td>{item.is_required === 1 ? "Ya" : "Tidak"}</td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         </div>
       </div>
 
-      <ModalPertanyaan></ModalPertanyaan>
+      <ModalPertanyaan onSubmit={handlerCreateQuestion}></ModalPertanyaan>
     </>
   );
 };

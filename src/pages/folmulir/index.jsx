@@ -15,29 +15,32 @@ const FolmulirPage = () => {
 
   //validation and errors
   const [error, setError] = useState(null);
-  
+  const [modalError, setModalError] = useState(null);
 
   //fetch data get all from api
   const fecthData = async () => {
     try {
       const response = await api.get("/forms");
       setFolmulirData(response.data.forms);
+      
     } catch (err) {
       console.log(err);
     } finally {
       setIsLoading(false);
     }
   };
-  
 
   //handler post data from from api
   const handlerCreateFolulir = async (formData) => {
     try {
       const response = await api.post("/forms", formData);
       fecthData();
+      setModalError(null);
     } catch (err) {
+      if (err.response.status === 422) {
+        setModalError(err.response.data.errors);
+      }
       console.log(err);
-     
     } finally {
     }
   };
@@ -45,7 +48,7 @@ const FolmulirPage = () => {
   //handler show detail form from api
   const handlerShowFormDetail = (slug) => {
     navigate(`/form/${slug}`);
-  }
+  };
 
   useEffect(() => {
     fecthData();
@@ -53,7 +56,6 @@ const FolmulirPage = () => {
 
   return (
     <>
-      
       <h2>Daftar Folmulir</h2>
       <div className="row mt-3">
         <div className="d-flex justify-content-end">
@@ -73,7 +75,7 @@ const FolmulirPage = () => {
               <th>NO</th>
               <th>Judul Formulir</th>
               <th>Slug</th>
-              <th>Deskripsis</th>
+              <th>Deskripsi</th>
               <th>Limit Respon</th>
               <th>Opsi</th>
             </tr>
@@ -84,15 +86,16 @@ const FolmulirPage = () => {
                 <td>{index + 1}</td>
                 <td>{item.name}</td>
                 <td>{item.slug}</td>
-                <td>{item.description}</td>
+                <td>{item.description ?? "-"}</td>
                 <td>{item.limit_one_response == 1 ? "Ya" : "Tidak"}</td>
                 <td>
-                  <button type="button"
+                  <button
+                    type="button"
                     onClick={() => handlerShowFormDetail(item.slug)}
                     className="btn btn-sm btn-info text-light"
                   >
                     Detail
-                  </button >
+                  </button>
                 </td>
               </tr>
             ))}
@@ -101,7 +104,11 @@ const FolmulirPage = () => {
       </div>
 
       {/*Modal formulir  */}
-      <ModalFolmulir onSubmit={handlerCreateFolulir}></ModalFolmulir>
+      <ModalFolmulir
+        onSubmit={handlerCreateFolulir}
+        errorMessage={modalError}
+        setErrorMessage={setModalError}
+      ></ModalFolmulir>
     </>
   );
 };

@@ -1,8 +1,9 @@
 import { all } from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import api from "../../api/api";
 
-const ModalFolmulir = ({ onSubmit }) => {
+const ModalFolmulir = (props) => {
+  const { onSubmit, errorMessage, setErrorMessage } = props;
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [allowedDomains, setAllowedDomains] = useState("");
@@ -11,8 +12,9 @@ const ModalFolmulir = ({ onSubmit }) => {
 
   const [isSubmit, setIsSubmit] = useState(false);
 
+
+
   const handlerSubmitFolmulir = async (e) => {
-  
     e.preventDefault();
     setIsSubmit(true);
     const requestDataFolmulir = {
@@ -22,13 +24,19 @@ const ModalFolmulir = ({ onSubmit }) => {
       description: description,
       limit_one_response: limitOneResponse,
     };
-    onSubmit(requestDataFolmulir);
+    console.log(errorMessage);
 
+    try {
+      await onSubmit(requestDataFolmulir); // Call API
+      setIsSubmit(false); 
+    } catch (error) {
+      setIsSubmit(false); // Tetap reset jika gagal
+      console.error("Submit error:", error);
+    }
   };
 
   return (
     <>
-   
       <div className="modal fade" id="modalFolmulir">
         <div className="modal-dialog">
           <div className="modal-content">
@@ -47,7 +55,7 @@ const ModalFolmulir = ({ onSubmit }) => {
               <div className="modal-body">
                 <div className="form-group mb-2">
                   <label htmlFor="name" className="form-label">
-                    Judul Pertanyaan :
+                    Judul Folmulir :
                   </label>
                   <input
                     type="text"
@@ -58,6 +66,10 @@ const ModalFolmulir = ({ onSubmit }) => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
+                  {/* show error message */}
+                  {errorMessage?.name?.[0] && (
+          <div className="invalid-feedback d-block">{errorMessage.name[0]}</div>
+        )}
                 </div>
                 <div className="form-group mb-2">
                   <label htmlFor="slug" className="form-label">
@@ -126,7 +138,11 @@ const ModalFolmulir = ({ onSubmit }) => {
                 >
                   Tutup
                 </button>
-                <button type="submit" disabled={isSubmit} className="btn btn-success">
+                <button
+                  type="submit"
+                  disabled={isSubmit}
+                  className="btn btn-success"
+                >
                   {isSubmit ? "Mengirim" : "Submit"}
                 </button>
               </div>

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-const ModalPertanyaan = () => {
+const ModalPertanyaan = (props) => {
+  const { onSubmit } = props;
+
   const [name, setName] = useState("");
   const [choiceType, setChoiceType] = useState("");
   const [choice, setChoice] = useState([]);
@@ -9,8 +11,6 @@ const ModalPertanyaan = () => {
   const [isRequired, setIsRequired] = useState(false);
 
   
-
-
   const handleAddChoice = () => {
     if (newChoice.trim() !== "") {
       setChoice([...choice, newChoice.trim()]);
@@ -20,6 +20,21 @@ const ModalPertanyaan = () => {
   const handleRemoveChoice = (index) => {
     setChoice(choice.filter((_, i) => i !== index));
   };
+
+  const questionsData = {
+    name: name,
+    choice_type : choiceType,
+    choices: choice,
+    is_required: isRequired,
+  };
+
+  const handlerSubmitQuestion = (e) => {
+    e.preventDefault();
+
+   
+    onSubmit(questionsData);
+  };
+
   return (
     <div className="modal fade" id="modalPertanyaan">
       <div className="modal-dialog">
@@ -36,7 +51,7 @@ const ModalPertanyaan = () => {
               aria-label="Close"
             ></button>
           </div>
-          <form>
+          <form onSubmit={handlerSubmitQuestion}>
             <div className="modal-body">
               <div className="form-group mb-2">
                 <label htmlFor="name" className="form-label">
@@ -97,17 +112,19 @@ const ModalPertanyaan = () => {
 
                   <ul className="list-group">
                     {choice.map((choic, index) => (
-
-                    
-                    <li key={index} className="list-group-item d-flex justify-content-between">
-                      {choic}
-                      <button
-                        type="button"
-                        className="btn btn-sm w-5 btn-danger" onClick={() => handleRemoveChoice(index)}
+                      <li
+                        key={index}
+                        className="list-group-item d-flex justify-content-between"
                       >
-                        -
-                      </button>
-                    </li>
+                        {choic}
+                        <button
+                          type="button"
+                          className="btn btn-sm w-5 btn-danger"
+                          onClick={() => handleRemoveChoice(index)}
+                        >
+                          -
+                        </button>
+                      </li>
                     ))}
                   </ul>
                 </div>
